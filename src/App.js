@@ -1,25 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: true,
+      data: []
+    }
+  }
+
+  recupDonnees() {
+    fetch("http://localhost:3000/restaurants")
+    .then(response => response.json())
+    .then(data => {
+      this.setState({
+        loading: false,
+        data: data.restaurants
+      })
+    });
+  }
+
+  componentDidMount() {
+    this.recupDonnees();
+  }
+
+  render() {
+    return (
+      <>
+        <h2>Liste des restaurants</h2>
+        { this.state.loading ?
+          <p>Chargement...</p>
+          :
+          <ul>
+            {this.state.data.map((r) => {
+            return <li key={r._id}>{r.name}</li>
+          })}
+          </ul>
+        }
+      </>
+    );
+  }
+};
 
 export default App;
